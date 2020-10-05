@@ -19,6 +19,14 @@
     <circle cx="80" cy="60" r="10"></circle>
     <circle cx="120" cy="60" r="10"></circle> -->
   </svg>
+  <script>
+    d3.csv("https://cs.trinity.edu/~mcox1/Data-Visualization/data/data.csv", function(data) {
+        for (var i = 0; i < data.length; i++) {
+            console.log(data[i].Name);
+            console.log(data[i].Age);
+        }
+    });
+    </script>
 
   <script src="d3-intro.js"></script>
 </body>
