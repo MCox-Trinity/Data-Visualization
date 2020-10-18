@@ -1,3 +1,5 @@
+
+
 d3.csv("./data.csv").then(function (data) {
     data.forEach(function (d) {
         d.population = +d.population;
