@@ -2,6 +2,42 @@
 <html>
 
 <body>
+    <div>
+        <h3>Change Selected Color</h3>
+        <input 
+        name="updateButton" 
+        type="button" 
+        value="Green Button" 
+        onclick="changeColorSelected('green')" />
+        <input 
+        name="updateButton" 
+        type="button" 
+        value="Blue Button" 
+        onclick="changeColorSelected('blue')" />
+        <input 
+        name="updateButton" 
+        type="button" 
+        value="Random Color" 
+        onclick="randomColorSelected()" />
+    </div>
+    <div>
+        <h3>Change Normal Color</h3>
+        <input 
+        name="updateButton" 
+        type="button" 
+        value="Green Button" 
+        onclick="changeColorNormal('green')" />
+        <input 
+        name="updateButton" 
+        type="button" 
+        value="Blue Button" 
+        onclick="changeColorNormal('blue')" />
+        <input 
+        name="updateButton" 
+        type="button" 
+        value="Random Color" 
+        onclick="randomColorNormal()" />
+    </div>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="brushing.js"></script>
 </body>

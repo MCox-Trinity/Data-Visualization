@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+        var margin = {
+                top: 30,
+                right: 20,
+                bottom: 30,
+                left: 50
+            },
+            width = 1000 - margin.left - margin.right,
+            height = 800 - margin.top - margin.bottom;
+        const svg = d3.select("body")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left}, ${margin.top})`)
+            .attr("viewBox", [0, 0, width, height]);
+        svg.append("image")
+            .attr("x", "0")
+            .attr("y", "0")
+            .attr("height", "70px")
+            .attr("width", "70px")
+            .attr("xlink:href", "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d185a77b-f00a-488a-ab49-d9269f20963e/de11jme-1b48e023-1aee-40d3-9007-2d9d09c9a238.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvZDE4NWE3N2ItZjAwYS00ODhhLWFiNDktZDkyNjlmMjA5NjNlXC9kZTExam1lLTFiNDhlMDIzLTFhZWUtNDBkMy05MDA3LTJkOWQwOWM5YTIzOC5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.pjKV66NnKdURYWJdeIJEiemSWaOWOswDG_1Zwii-P4U")
+    </script>
+</body>
+
+</html>
