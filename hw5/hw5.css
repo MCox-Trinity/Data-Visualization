@@ -1,0 +1,13 @@
+#page-body{
+    padding: 2em;
+}
+
+text.title{
+    background-color: red;
+    font-size: 2em;
+}
+
+input[type=button].disabled{
+    background-color: #85848d;
+    transition: background-color 0.5s ease;
+}

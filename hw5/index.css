@@ -1,0 +1,148 @@
+* {
+    font-family: 'Comfortaa', cursive;
+}
+
+#page-container {
+    height: 100%;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+#menu {
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    width: 20%;
+    background-color: #F47979;
+    color: white;
+    border-right: white solid 10px;
+}
+
+#menu-header {
+    padding: 1em;
+    align-items: center;
+    text-align: center;
+}
+
+#menu-header h1 {
+    font-family: 'Pacifico', cursive;
+    margin-top: .5em;
+    margin-bottom: .5em;
+    font-size: 2em;
+}
+
+#menu-header h2 {
+    font-size: 1em;
+}
+
+#nav-menu {
+    margin-top: 2em;
+}
+
+#nav-menu li,
+#nav-menu li.active:hover {
+    transition: background-color 0.5s ease;
+    width: 100%;
+    display: inline-block;
+    background-color: #F47979;
+}
+
+
+#nav-menu li a,
+#nav-menu li.active:hover a {
+    transition: color 0.5s ease;
+    color: white;
+    text-decoration: none;
+    padding: 1em;
+    width: 90%;
+    display: inline-block;
+}
+
+#nav-menu li.active {
+    transition: background-color 0.5s ease;
+    background-color: white;
+    border: solid 3px white;
+}
+
+#nav-menu li.active a {
+    transition: color 0.5s ease;
+    color: #F47979;
+}
+
+#nav-menu li:hover {
+    transition: background-color 0.5s ease;
+    background-color: #ffc5c5;
+    border-right: solid 3px white;
+    border-left: none;
+}
+
+#nav-menu li:hover a {
+    transition: color 0.5s ease;
+    color: #F47979;
+}
+
+#page {
+    height: 100vh;
+    min-height: 100vh;
+    width: 80%;
+    overflow: auto;
+}
+
+#page-contents {
+    margin: 2em;
+}
+
+#paralax-container {
+    height: 20em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.parallax {
+    /* The image used */
+    background-image: url("../assets/Clouds_Smaller.png");
+    background-repeat: repeat-y;
+    background-size: 20% 50%;
+
+    /* Full height */
+    height: 20%;
+    width: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#page-header {
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 80%;
+    height: 50%;
+    border: solid white .5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#page-header h1 {
+    font-size: 6em;
+    color: #5fc4c0;
+    font-family: 'Pacifico', cursive;
+}
+
+input[type=button] {
+    background-color: #F47979;
+    border: none;
+    color: white;
+    padding: 1em;
+}
+
+input[type=button]:hover {
+    background-color: #ff5b5b;
+    transition: background-color 0.5s ease;
+}
