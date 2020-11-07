@@ -36,7 +36,7 @@ TSLA_Data.split(';').slice(1).forEach(point => {
 
 //Setup 
 var margin = { top: 60, right: 20, bottom: 40, left: 50 },
-    SVGwidth = (window.innerWidth * 0.75) - margin.left - margin.right,
+    SVGwidth = 1200 - margin.left - margin.right,
     SVGheight = 700 - margin.top - margin.bottom;
 var gap = 50;
 var DetailViewHeight = (SVGheight * .85) - gap;
@@ -191,37 +191,37 @@ function brushed(event) {
         const [x0, x1] = selection.map(overview_x.invert);
         selection_start_date = x0;
         selection_end_date = x1;
-        renderDetailView(x0, x1, data);
+        renderDetailView(x0, x1);
     }
 }
 
 function finishedBrushing(event) {
-    const brushWidth = overview_x(default_end_date) - overview_x(default_start_date);
-    const [leftBound, rightBound] = overview_x.range()
+    const minBrushWidth = 100;
+    const [leftBound, rightBound] = overview_x.range();
     if (event.selection === null) {
-        console.log("null");
         const [[clickLocation]] = d3.pointers(event);
-        const [x0, x1] = [clickLocation - brushWidth / 2, clickLocation + brushWidth / 2];
-        const [start, end] = x1 > rightBound ? [rightBound - brushWidth, rightBound] :
-            x0 < leftBound ? [leftBound, leftBound + brushWidth] : [x0, x1]
-        d3.select(this)
-            .call(brush.move, [start, end]
-            ).map(overview_x);
-        renderDetailView(start, end, data);
+        console.log(clickLocation);
+        //for some reason my click location is 425 off
+        const clickLocation_adjusted = clickLocation - 425;
+        const [x0, x1] = [clickLocation_adjusted - (minBrushWidth / 2), clickLocation_adjusted + (minBrushWidth / 2)];
+        const [start_day, end_day] = [overview_x.invert(x0), overview_x.invert(x1)];
+        const [start, end] =
+            x0 < leftBound ? [leftBound, leftBound + (minBrushWidth / 2)] :
+                x1 > rightBound ? [rightBound - (minBrushWidth / 2), rightBound] :
+                    [x0, x1];
+        d3.select(this).call(brush.move, [start, end]);
     }
     else {
-        console.log("not null");
         var [brushL, brushR] = d3.brushSelection(this);
-        if (brushL - brushR < 100) {
-            console.log("moo");
-            const [x0, x1] = [brushL - brushWidth / 2, brushR + brushWidth / 2];
+        const [brush_start_date, brush_end_date] = [overview_x.invert(brushL), overview_x.invert(brushR)]
+        if ((brushR - brushL) < minBrushWidth) {
+            const [x0, x1] = [brushL - (minBrushWidth / 2), brushR + (minBrushWidth / 2)];
+            const [start_day, end_day] = [overview_x.invert(x0), overview_x.invert(x1)];
             const [start, end] =
-                x1 > rightBound ? [rightBound - brushWidth, rightBound] :
-                    x0 < leftBound ? [leftBound, leftBound + brushWidth] :
-                        [x0, x1]
-            d3.select(this)
-                .call(brush.move, [start, end]).map(overview_x);
-            renderDetailView(start, end);
+                x0 < leftBound ? [leftBound, leftBound + minBrushWidth] :
+                    x1 > rightBound ? [rightBound - minBrushWidth, rightBound] :
+                        [x0, x1];
+            d3.select(this).call(brush.move, [start, end]);
         }
     }
 }
