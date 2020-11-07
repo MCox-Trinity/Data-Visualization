@@ -49,6 +49,8 @@ var secondary_color = "#16697a";
 let default_start_date = parseDate("2019-10-30");
 let default_end_date = parseDate("2019-12-30");
 
+var data = null;
+
 // var selection_start_date = default_start_date;
 // var selection_end_date = default_end_date;
 
@@ -88,8 +90,8 @@ var detailView = svg.append("g")
     .attr("height", DetailViewHeight)
     .attr("transform", `translate(0, 0)`);
     
-renderDetailView(default_start_date, default_end_date, default_data);
-renderWithData(default_start_date, default_end_date, default_data);
+renderDetailView(default_start_date, default_end_date);
+renderWithData(default_start_date, default_end_date);
 
 //Functions
 
@@ -103,7 +105,9 @@ function viewTSLA() {
     renderWithData(TSLA_Parsed)
 }
 
-function renderWithData(start_date, end_date, data) {
+function renderWithData(start_date, end_date, new_data) {
+    data = new_data;
+
     console.log(d3.max(data, function(d){return d.close;}))
     
     overview_y.domain([0, d3.max(data, function (d) {
@@ -158,7 +162,7 @@ function renderWithData(start_date, end_date, data) {
     }
 }
 
-function renderDetailView(start_date, end_date, data) {
+function renderDetailView(start_date, end_date) {
     detailView.selectAll('*').remove();
     detail_y = d3.scaleLinear().range([DetailViewHeight, 0]);
     detail_x = d3.scaleTime().range([0, SVGwidth]);

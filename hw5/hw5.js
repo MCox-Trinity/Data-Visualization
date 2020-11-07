@@ -10,12 +10,12 @@ XOM_Data.split(';').slice(1).forEach(point => {
     let pointData = point.split(',');
     XOM_Parsed.push({
         date: parseDate(pointData[0]),
-        open: pointData[1],
-        high: pointData[2],
-        low: pointData[3],
-        close: pointData[4],
-        adj_close: pointData[5],
-        volume: pointData[6]
+        open: +pointData[1],
+        high: +pointData[2],
+        low: +pointData[3],
+        close: +pointData[4],
+        adj_close: +pointData[5],
+        volume: +pointData[6]
     });
 });
 
@@ -25,12 +25,12 @@ TSLA_Data.split(';').slice(1).forEach(point => {
     let pointData = point.split(',');
     TSLA_Parsed.push({
         date: parseDate(pointData[0]),
-        open: pointData[1],
-        high: pointData[2],
-        low: pointData[3],
-        close: pointData[4],
-        adj_close: pointData[5],
-        volume: pointData[6]
+        open: +pointData[1],
+        high: +pointData[2],
+        low: +pointData[3],
+        close: +pointData[4],
+        adj_close: +pointData[5],
+        volume: +pointData[6]
     });
 });
 
@@ -42,17 +42,27 @@ var gap = 50;
 var DetailViewHeight = (SVGheight * .85) - gap;
 var OverviewViewHeight = SVGheight * .15;
 
+var data = null;
+
 var default_data = TSLA_Parsed;
 var primary_color = "#F58A94";
 
 let default_start_date = parseDate("2019-10-30");
 let default_end_date = parseDate("2019-12-30");
 
+var selection_start_date = default_start_date;
+var selection_end_date = default_end_date;
+
 var overview_y = d3.scaleLinear().range([OverviewViewHeight, 0]);
 var overview_x = d3.scaleTime().range([0, SVGwidth]);
 
 var detail_y = d3.scaleLinear().range([DetailViewHeight, 0]);
 var detail_x = d3.scaleTime().range([0, SVGwidth]);
+
+const brush = d3.brushX()
+    .extent([[0, 0], [SVGwidth - margin.right, OverviewViewHeight]])
+    .on("start brush", brushed)
+    .on("end", finishedBrushing);
 
 //SVG
 var svg = d3.select("#detail-location")
@@ -82,7 +92,7 @@ function viewXOM() {
     console.log("XOM")
     document.getElementById("XOM_Button").className = "disabled";
     document.getElementById("TSLA_Button").className = "";
-    renderWithData(default_start_date, default_end_date, XOM_Parsed)
+    renderWithData(selection_start_date, selection_end_date, XOM_Parsed)
 }
 
 //Render the TSLA Data
@@ -90,14 +100,16 @@ function viewTSLA() {
     console.log("TSLA")
     document.getElementById("TSLA_Button").className = "disabled";
     document.getElementById("XOM_Button").className = "";
-    renderWithData(default_start_date, default_end_date, TSLA_Parsed)
+    renderWithData(selection_start_date, selection_end_date, TSLA_Parsed)
 }
 
 //Render the graphs with the given data
-function renderWithData(start, end, data) {
+function renderWithData(start, end, new_data) {
+    data = new_data;
+
     //Remove the data on the graph 
     overviewView.selectAll('*').remove();
-    
+
     //Overview view axis info
     overview_y = d3.scaleLinear().range([OverviewViewHeight, 0]);
     overview_x = d3.scaleTime().range([0, SVGwidth]);
@@ -124,27 +136,15 @@ function renderWithData(start, end, data) {
         .attr("fill", primary_color)
         .attr("d", overview_area(data));
 
-    const brush = d3.brushX()
-        .extent([[0, 0], [SVGwidth - margin.right, OverviewViewHeight]])
-        .on("start brush end", brushed);
-
     overviewView.append("g").call(overview_xAxis);
     overviewView.append("g").call(overview_yAxis);
-    overviewView.append("g").call(brush, data);
+    overviewView.append("g")
+        .call(brush, data)
+        .call(brush.move, [selection_start_date, selection_end_date].map(overview_x));
     renderDetailView(start, end, data);
-
-    function brushed(event) {
-        const selection = event.selection;
-        if (selection === null) {
-
-        } else {
-            const [x0, x1] = selection.map(overview_x.invert);
-            renderDetailView(x0, x1, data);
-        }
-    }
 }
 
-function renderDetailView(start_date, end_date, data) {
+function renderDetailView(start_date, end_date) {
     //Remove what is currently in the detail view
     detailView.selectAll('*').remove();
 
@@ -181,4 +181,47 @@ function renderDetailView(start_date, end_date, data) {
 
     detailView.append("g").call(detail_xAxis);
     detailView.append("g").call(detail_yAxis);
+}
+
+function brushed(event) {
+    const selection = event.selection;
+    if (selection === null) {
+
+    } else {
+        const [x0, x1] = selection.map(overview_x.invert);
+        selection_start_date = x0;
+        selection_end_date = x1;
+        renderDetailView(x0, x1, data);
+    }
+}
+
+function finishedBrushing(event) {
+    const brushWidth = overview_x(default_end_date) - overview_x(default_start_date);
+    const [leftBound, rightBound] = overview_x.range()
+    if (event.selection === null) {
+        console.log("null");
+        const [[clickLocation]] = d3.pointers(event);
+        const [x0, x1] = [clickLocation - brushWidth / 2, clickLocation + brushWidth / 2];
+        const [start, end] = x1 > rightBound ? [rightBound - brushWidth, rightBound] :
+            x0 < leftBound ? [leftBound, leftBound + brushWidth] : [x0, x1]
+        d3.select(this)
+            .call(brush.move, [start, end]
+            ).map(overview_x);
+        renderDetailView(start, end, data);
+    }
+    else {
+        console.log("not null");
+        var [brushL, brushR] = d3.brushSelection(this);
+        if (brushL - brushR < 100) {
+            console.log("moo");
+            const [x0, x1] = [brushL - brushWidth / 2, brushR + brushWidth / 2];
+            const [start, end] =
+                x1 > rightBound ? [rightBound - brushWidth, rightBound] :
+                    x0 < leftBound ? [leftBound, leftBound + brushWidth] :
+                        [x0, x1]
+            d3.select(this)
+                .call(brush.move, [start, end]).map(overview_x);
+            renderDetailView(start, end);
+        }
+    }
 }
